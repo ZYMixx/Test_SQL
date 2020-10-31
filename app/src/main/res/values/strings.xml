@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Test_SQL</string>
+    <string name="open">open</string>
+    <string name="closs">closs</string>
+    <string name="Dwight"></string>
+
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <string name="action_settings">Settings</string>
+</resources>

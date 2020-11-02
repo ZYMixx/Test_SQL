@@ -7,14 +7,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -25,6 +33,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 
@@ -45,6 +56,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     static int nextNotes = 1;
     ViewGroup.LayoutParams LPforNotes;
     String coverTitle;
+    FloatingActionButton floatingActionButton;
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -200,6 +212,10 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         into_main_frameLayout1 = new FrameLayout(Scroll.this);
         into_main_frameLayout1 = (FrameLayout) findViewById(R.id.into_main_frameLayout1);
 
+        floatingActionButton = findViewById(R.id.fabab);
+        floatingActionButton.setExpanded(true);
+
+        floatingActionButton.hide(); //скрываем кнопку для отмены переноса
 
         main_frameLayout.setLayoutParams(getParms(0, 0, 0, 0));
 
@@ -293,7 +309,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                     builder.show();
 
                     break; //удалить
-                case (1): break; //Переместить
+                case (1): moveNoteInNewPosition (); break; //Переместить
                 case (2): break; //Создать папку
             }
 
@@ -359,9 +375,34 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
     }
 
+    public void moveNoteInNewPosition (){
+        final ScaleAnimation startScaleAnimation = new ScaleAnimation(1, 0.9f, 1f, 0.9f, 75, 75);
+        startScaleAnimation.setFillAfter(true);
+        startScaleAnimation.setDuration(300);
+        ScaleAnimation reversEndAnimation = new ScaleAnimation(0.8f, 1f, 0.8f, 1f, 100, 100);
+        reversEndAnimation.setDuration(300);
+        reversEndAnimation.setFillAfter(true);
+        for (ImageView image : imageForRemove ){
+            ImageView imageBack = new ImageView (this);
+            imageBack.setLayoutParams(image.getLayoutParams());
+            imageBack.setBackgroundColor(Color.rgb(70,40,225));
+            imageBack.setAlpha(0.35f);
+            into_main_frameLayout1.addView(imageBack);
+            image.startAnimation(startScaleAnimation);
+            for (TextView textView: textViewsForRemove){
+                textView.startAnimation(startScaleAnimation);
+            }
+        }
+        getSupportActionBar().setTitle("..переместить запись..");
+        getSupportActionBar().setLogo(android.R.drawable.ic_delete);
+
+
+        floatingActionButton.show();
+
+    }
+
 
     public void createNotes() {
-
         imageView = new ImageView(this);
         imageView.setImageResource(R.drawable.zzz);
         imageView.setLayoutParams(plus.getLayoutParams());

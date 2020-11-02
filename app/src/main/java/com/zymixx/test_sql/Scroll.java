@@ -50,6 +50,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     ArrayList<Notes> notesArrayList = new ArrayList<Notes>();
     ArrayList<ImageView> imageForRemove = new ArrayList<ImageView>();
     ArrayList<TextView> textViewsForRemove = new ArrayList<TextView>();
+    ArrayList <ImageView> backImageForRemove = new ArrayList<>();
     MySQL mySQL;
     SQLiteDatabase db;
     static int countNotes = 0;
@@ -57,6 +58,8 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     ViewGroup.LayoutParams LPforNotes;
     String coverTitle;
     FloatingActionButton floatingActionButton;
+
+    ArrayList<Integer> notesCountForReplace = new ArrayList<Integer>();
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -309,7 +312,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                     builder.show();
 
                     break; //удалить
-                case (1): moveNoteInNewPosition (); break; //Переместить
+                case (1): moveNoteInNewPosition (note_lvl); break; //Переместить
                 case (2): break; //Создать папку
             }
 
@@ -375,23 +378,81 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
     }
 
-    public void moveNoteInNewPosition (){
+    public void moveNoteInNewPosition (int noteLVL ){
         final ScaleAnimation startScaleAnimation = new ScaleAnimation(1, 0.9f, 1f, 0.9f, 75, 75);
         startScaleAnimation.setFillAfter(true);
         startScaleAnimation.setDuration(300);
         ScaleAnimation reversEndAnimation = new ScaleAnimation(0.8f, 1f, 0.8f, 1f, 100, 100);
         reversEndAnimation.setDuration(300);
         reversEndAnimation.setFillAfter(true);
-        for (ImageView image : imageForRemove ){
-            ImageView imageBack = new ImageView (this);
-            imageBack.setLayoutParams(image.getLayoutParams());
-            imageBack.setBackgroundColor(Color.rgb(70,40,225));
+        for (final Notes note : notesArrayList ){
+            final ImageView imageBack = new ImageView (this);
+            imageBack.setLayoutParams(note.imageView2.getLayoutParams());
+            imageBack.setBackgroundColor(Color.rgb(70,40,225)); //цвет всех записей
             imageBack.setAlpha(0.35f);
+            backImageForRemove.add(imageBack);
+            note.backImageForReplace = imageBack;
+            if (note.countLVL == noteLVL){ notesCountForReplace.add(noteLVL);
+                imageBack.setBackgroundColor(Color.rgb(220, 10, 10));} //Цвет записи для перемещеиния
             into_main_frameLayout1.addView(imageBack);
-            image.startAnimation(startScaleAnimation);
+            note.imageView2.startAnimation(startScaleAnimation);
             for (TextView textView: textViewsForRemove){
                 textView.startAnimation(startScaleAnimation);
             }
+
+            imageBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("Рандомный клик по записи");
+                    Notes noteOldPlace = note;
+                    Notes noteNewPlace = note; //здесь можно создать пустой обькст Ноте
+                    for (Notes note: notesArrayList) {
+                        if (note.countLVL == notesCountForReplace.get(0)) {
+                            noteOldPlace = note;
+                            break;
+                        }
+                        if (note.backImageForReplace == v) {
+                            noteNewPlace = note;
+                            break;
+                        }
+                    }
+                        mySQL = new MySQL(Scroll.this);
+                        System.out.println("СТАРТУЮ скуэль код");
+                        try {
+                            db = mySQL.getWritableDatabase();
+                            String column [] = {"id", "text", "titleNote"};
+                            System.out.println("Новое место "+ noteNewPlace.countLVL);
+                            System.out.println("Старое место "+ noteOldPlace.countLVL);
+                            Cursor cursor = db.query("my_DB", column, "id = " + noteNewPlace.countLVL, null,null,null,null);
+                            cursor.moveToFirst();
+                            int newPlaceID = cursor.getInt(0);
+                            String newPlaceText = cursor.getString(1);
+                            String newPlaceTitle = cursor.getString(2);
+                            cursor = db.query("my_DB", column, "id = " + noteOldPlace.countLVL, null,null,null,null);
+                            cursor.moveToFirst();
+                            int oldPlaceID = cursor.getInt(0);
+                            String oldPlaceText = cursor.getString(1);
+                            String oldPlaceTitle = cursor.getString(2);
+
+                            db.execSQL("DELETE FROM my_DB where id = " + noteNewPlace.countLVL + " or " + "id = " +  noteOldPlace.countLVL);
+
+                            db.execSQL("INSERT INTO my_DB VALUES (" + noteNewPlace.countLVL + ",'"+ oldPlaceText + "', '" +
+                                    oldPlaceTitle + "')");
+                            db.execSQL("INSERT INTO my_DB VALUES (" + noteOldPlace.countLVL + " ,' "+ newPlaceText + " ', '" +
+                                    newPlaceTitle + "')");
+                            cursor.close();
+                            for (int i = 0; i < 10; i++) {
+                                System.out.println("ХЗ В ЧЁМ ПРОБЛЕМА Я ВСЁ СДЕЛАЛ");
+                            }
+
+                        } catch (Exception ex){ ex.printStackTrace();};
+
+                        repaintALL();
+
+
+                }
+            });
+
         }
         getSupportActionBar().setTitle("..переместить запись..");
         getSupportActionBar().setLogo(android.R.drawable.ic_delete);
@@ -446,9 +507,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 finalTextForCover = finalTextForCover + "...";}
             finalTextForCover = finalTextForCover.replaceAll("\n", " "); //заменем абзатцы пробелами
             textView.setText(finalTextForCover);
-            for (int i = 0; i < 10; i++) {
-                System.out.println(finalTextForCover);
-            }
+
             if (!coverTitle.equals("Title")){
                 textView.setText(coverTitle);
                 textView.setTextColor(Color.WHITE);
@@ -521,6 +580,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
    public class Notes {
         public int countLVL;
         public ImageView imageView2;
+        public ImageView backImageForReplace;
 
         Notes(){
             ImageView imageView2 = new ImageView(Scroll.this);

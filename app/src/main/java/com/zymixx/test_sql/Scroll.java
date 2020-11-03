@@ -47,6 +47,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     FrameLayout into_main_frameLayout1;
     ImageView plus;
     ImageView imageView;
+    ImageView imageBack;
     ArrayList<Notes> notesArrayList = new ArrayList<Notes>();
     ArrayList<ImageView> imageForRemove = new ArrayList<ImageView>();
     ArrayList<TextView> textViewsForRemove = new ArrayList<TextView>();
@@ -161,6 +162,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         super.onPostResume();
         repaintALL();
     }
+
     public void repaintALL (){
 
         try {
@@ -172,6 +174,12 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         }
         plus.setAlpha(0f);
         } catch (Exception ex) {ex.printStackTrace();}
+
+        for (ImageView back: backImageForRemove){
+            back.setAlpha(0f);
+        }
+
+        notesArrayList.removeAll(notesArrayList);
 
         imageForRemove.removeAll(imageForRemove);
         nextNotes = 1;
@@ -382,82 +390,95 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         final ScaleAnimation startScaleAnimation = new ScaleAnimation(1, 0.9f, 1f, 0.9f, 75, 75);
         startScaleAnimation.setFillAfter(true);
         startScaleAnimation.setDuration(300);
-        ScaleAnimation reversEndAnimation = new ScaleAnimation(0.8f, 1f, 0.8f, 1f, 100, 100);
-        reversEndAnimation.setDuration(300);
-        reversEndAnimation.setFillAfter(true);
-        for (final Notes note : notesArrayList ){
-            final ImageView imageBack = new ImageView (this);
-            imageBack.setLayoutParams(note.imageView2.getLayoutParams());
-            imageBack.setBackgroundColor(Color.rgb(70,40,225)); //цвет всех записей
-            imageBack.setAlpha(0.35f);
-            backImageForRemove.add(imageBack);
-            note.backImageForReplace = imageBack;
-            if (note.countLVL == noteLVL){ notesCountForReplace.add(noteLVL);
-                imageBack.setBackgroundColor(Color.rgb(220, 10, 10));} //Цвет записи для перемещеиния
-            into_main_frameLayout1.addView(imageBack);
-            note.imageView2.startAnimation(startScaleAnimation);
-            for (TextView textView: textViewsForRemove){
-                textView.startAnimation(startScaleAnimation);
-            }
+            for (Notes note : notesArrayList) {
+                imageBack = new ImageView(Scroll.this);
+                imageBack.setLayoutParams(note.imageView2.getLayoutParams());
+                imageBack.setBackgroundColor(Color.rgb(70, 40, 225)); //цвет всех записей
+                imageBack.setAlpha(0.35f);
+                backImageForRemove.add(imageBack);
+                note.backImageForReplace = imageBack;
 
-            imageBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println("Рандомный клик по записи");
-                    Notes noteOldPlace = note;
-                    Notes noteNewPlace = note; //здесь можно создать пустой обькст Ноте
-                    for (Notes note: notesArrayList) {
-                        if (note.countLVL == notesCountForReplace.get(0)) {
-                            noteOldPlace = note;
-                            break;
+
+                if (note.countLVL == noteLVL) {
+                    notesCountForReplace.add(noteLVL);
+                    imageBack.setBackgroundColor(Color.rgb(220, 10, 10));
+                }//Цвет записи для перемещеиния
+                into_main_frameLayout1.addView(imageBack);
+                note.imageView2.startAnimation(startScaleAnimation);
+                for (TextView textView : textViewsForRemove) {
+                    textView.startAnimation(startScaleAnimation);
+                }
+
+                imageBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("Рандомный клик по записи");
+                        Notes noteOldPlace = new Notes();
+                        Notes noteNewPlace = new Notes(); //здесь можно создать пустой обькст Ноте
+                        for (Notes note : notesArrayList) {
+                            if (note.countLVL == notesCountForReplace.get(0)) {
+                                noteOldPlace = note;
+                                break;
+                            }
+                            if (note.backImageForReplace == v) {
+                                noteNewPlace = note;
+                                break;
+                            }
                         }
-                        if (note.backImageForReplace == v) {
-                            noteNewPlace = note;
-                            break;
-                        }
-                    }
                         mySQL = new MySQL(Scroll.this);
                         System.out.println("СТАРТУЮ скуэль код");
                         try {
                             db = mySQL.getWritableDatabase();
-                            String column [] = {"id", "text", "titleNote"};
-                            System.out.println("Новое место "+ noteNewPlace.countLVL);
-                            System.out.println("Старое место "+ noteOldPlace.countLVL);
-                            Cursor cursor = db.query("my_DB", column, "id = " + noteNewPlace.countLVL, null,null,null,null);
+                            String column[] = {"id", "text", "titleNote"};
+                            System.out.println("Новое место " + noteNewPlace.countLVL);
+                            System.out.println("Старое место " + noteOldPlace.countLVL);
+                            Cursor cursor = db.query("my_DB", column, "id = " + noteNewPlace.countLVL, null, null, null, null);
                             cursor.moveToFirst();
                             int newPlaceID = cursor.getInt(0);
                             String newPlaceText = cursor.getString(1);
                             String newPlaceTitle = cursor.getString(2);
-                            cursor = db.query("my_DB", column, "id = " + noteOldPlace.countLVL, null,null,null,null);
+                            cursor = db.query("my_DB", column, "id = " + noteOldPlace.countLVL, null, null, null, null);
                             cursor.moveToFirst();
                             int oldPlaceID = cursor.getInt(0);
                             String oldPlaceText = cursor.getString(1);
                             String oldPlaceTitle = cursor.getString(2);
 
-                            db.execSQL("DELETE FROM my_DB where id = " + noteNewPlace.countLVL + " or " + "id = " +  noteOldPlace.countLVL);
+                            db.execSQL("DELETE FROM my_DB where id = " + noteNewPlace.countLVL + " or " + "id = " + noteOldPlace.countLVL);
 
-                            db.execSQL("INSERT INTO my_DB VALUES (" + noteNewPlace.countLVL + ",'"+ oldPlaceText + "', '" +
+                            db.execSQL("INSERT INTO my_DB VALUES (" + noteNewPlace.countLVL + ",'" + oldPlaceText + "', '" +
                                     oldPlaceTitle + "')");
-                            db.execSQL("INSERT INTO my_DB VALUES (" + noteOldPlace.countLVL + " ,' "+ newPlaceText + " ', '" +
+                            db.execSQL("INSERT INTO my_DB VALUES (" + noteOldPlace.countLVL + " ,' " + newPlaceText + " ', '" +
                                     newPlaceTitle + "')");
                             cursor.close();
-                            for (int i = 0; i < 10; i++) {
-                                System.out.println("ХЗ В ЧЁМ ПРОБЛЕМА Я ВСЁ СДЕЛАЛ");
-                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        ;
 
-                        } catch (Exception ex){ ex.printStackTrace();};
+                   /* for (int i = 0; i < backImageForRemove.size() ; i++) {
+                        backImageForRemove.get(i).setBackgroundColor(80000000);
+                    }*/
+                        ScaleAnimation reversEndAnimation = new ScaleAnimation(0.91f, 1f, 0.91f, 1f, 100, 100);
+                        reversEndAnimation.setDuration(250);
+                        reversEndAnimation.setFillAfter(true);
+
+                        for (ImageView imBC : backImageForRemove) {
+                            imBC.setAlpha(0f);
+                        }
 
                         repaintALL();
 
+                        getSupportActionBar().setTitle(R.string.app_name);
+                    }
+                });
 
-                }
-            });
+
+
+
 
         }
+
         getSupportActionBar().setTitle("..переместить запись..");
-        getSupportActionBar().setLogo(android.R.drawable.ic_delete);
-
-
         floatingActionButton.show();
 
     }
@@ -471,8 +492,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         TextView textView = new TextView(this);
         textView.setLayoutParams(plus.getLayoutParams());
         String textForCover = "null";
-     //   textView.setText(getNomberMethod(countNotes));
-        //textView.setGravity(4);
         textView.setTextSize(20);
         textView.setLineSpacing(0f, 0.8f);
         textView.setTextColor(Color.RED);
@@ -484,8 +503,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         Notes notes = new Notes();
         imageView.setOnClickListener(new onClick());
         imageView.setOnLongClickListener(new OnLongClick());
-
-
 
         mySQL = new MySQL(this);
         try {
@@ -512,8 +529,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 textView.setText(coverTitle);
                 textView.setTextColor(Color.WHITE);
             }
-        // int corent_AutoInc = Integer.parseInt(cursor.getString(0));
-          //  db.execSQL("UPDATE my_DB SET id = " + (countNotes - 1) + " where id = " + nextNotes);
             nextNotes++;
         }catch (Exception ex) {ex.printStackTrace();}
 
@@ -523,6 +538,8 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         into_main_frameLayout1.addView(imageView);
         into_main_frameLayout1.addView(textView);
         imageForRemove.add(imageView);
+        imageView.bringToFront();
+        textView.bringToFront();
 
     }
 
@@ -533,11 +550,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
         db = mySQL.getWritableDatabase();
         db.execSQL("INSERT INTO my_DB (id, text) values (null, 'новая запись')");
-      //  String column [] = {"id", "text"};
-      //  Cursor cursor = db.query("my_DB", column, null, null,null,null,null);
-      //  cursor.moveToLast();
-    //    int corent_AutoInc = Integer.parseInt(cursor.getString(0));
-   //     db.execSQL("UPDATE my_DB SET id =" + countNotes + "where id = " + corent_AutoInc);
     }catch (Exception ex) {ex.printStackTrace();}
         createNotes();
     }

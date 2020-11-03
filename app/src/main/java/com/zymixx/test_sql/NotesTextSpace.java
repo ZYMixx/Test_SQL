@@ -138,17 +138,12 @@ public class NotesTextSpace extends AppCompatActivity {
                }
                @Override
                public void afterTextChanged(Editable s) {
-                  // editTextForListenrt.addTextChangedListener(null);
-                  // editTextForListenrt.setOnClickListener(null);
-                   //editText.setSelection(editText.getText().length());
-                 //  editText.setAlpha(1f);
                    String charToString = Character.toString(s.charAt(s.length()-1));
                    editText.setText(charToString);
                    into_notes_frameLayout.removeView(editTextForListenrt);
                    editText.setAlpha(1f);
                    editText.setSelection(editText.length());
                    editText.requestFocus();
-
 
                }
            });
@@ -168,41 +163,6 @@ public class NotesTextSpace extends AppCompatActivity {
            editText.setSelection(editText.length());
            editText.requestFocus();}
 
-    }
-
-    public void chengText (){
-        editText.setText("Как же сука бусит");
-    }
-
-    public class KeyKey implements KeyListener{
-        @Override
-        public int getInputType() {
-            System.out.println("Происходит 1");
-            return 0;
-        }
-
-        @Override
-        public boolean onKeyDown(View view, Editable text, int keyCode, KeyEvent event) {
-            System.out.println(String.valueOf(text));
-            return false;
-        }
-
-        @Override
-        public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
-            System.out.println(String.valueOf(text));
-            return false;
-        }
-
-        @Override
-        public boolean onKeyOther(View view, Editable text, KeyEvent event) {
-            System.out.println("Происходит 4");
-            return false;
-        }
-
-        @Override
-        public void clearMetaKeyState(View view, Editable content, int states) {
-            System.out.println("Происходит 5");
-        }
     }
 
     public void onSaveClicked (){

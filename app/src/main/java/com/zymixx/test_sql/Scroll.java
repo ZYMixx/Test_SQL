@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
@@ -175,9 +176,9 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         plus.setAlpha(0f);
         } catch (Exception ex) {ex.printStackTrace();}
 
-        for (ImageView back: backImageForRemove){
+        /*for (ImageView back: backImageForRemove){
             back.setAlpha(0f);
-        }
+        }*/
 
         notesArrayList.removeAll(notesArrayList);
 
@@ -458,15 +459,42 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                    /* for (int i = 0; i < backImageForRemove.size() ; i++) {
                         backImageForRemove.get(i).setBackgroundColor(80000000);
                     }*/
-                        ScaleAnimation reversEndAnimation = new ScaleAnimation(0.91f, 1f, 0.91f, 1f, 100, 100);
-                        reversEndAnimation.setDuration(250);
+                        ScaleAnimation reversEndAnimation = new ScaleAnimation(0.92f, 1f, 0.92f, 1f, 100, 100);
+                        reversEndAnimation.setDuration(200);
                         reversEndAnimation.setFillAfter(true);
 
-                        for (ImageView imBC : backImageForRemove) {
-                            imBC.setAlpha(0f);
-                        }
+                        AlphaAnimation alphaAnimation = new AlphaAnimation(0.35f, 0.1f);
+                        alphaAnimation.setFillAfter(true);
+                        alphaAnimation.setDuration(200);
+
 
                         repaintALL();
+                        for (final ImageView imBC : backImageForRemove) {
+                            imBC.bringToFront();
+                            imBC.setOnClickListener(null);
+                            imBC.startAnimation(alphaAnimation);
+                            alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    for (ImageView imgg: backImageForRemove){
+                                    into_main_frameLayout1.removeView(imgg);}
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                        }
+
+                        for (final ImageView imgAnimate : imageForRemove) {
+                            imgAnimate.startAnimation(reversEndAnimation);
+                        }
 
                         getSupportActionBar().setTitle(R.string.app_name);
                     }

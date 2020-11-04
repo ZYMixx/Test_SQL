@@ -79,17 +79,87 @@ public class NotesTextSpace extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         System.out.println(item.getItemId());
        switch (item.getItemId()){
-           case (R.id.save_menu_item): onSaveClicked (); return true;
+           case (android.R.id.home):
+               mySQL = new MySQL(NotesTextSpace.this);
+               try {
+                   db = mySQL.getWritableDatabase();
+                   String column [] = {"id", "text", "titleNote"};
+                   Cursor cursor = db.query("my_DB", column, "id = " + countLVLfromScroll, null,null,null,null);
+                   cursor.moveToFirst();
+                   textFromSQL = cursor.getString(1);
+                   cursor.close();
+               }catch (Exception ex) {ex.printStackTrace();}
+
+               if (textFromSQL.equals(String.valueOf(editText.getText()))){
+                   return false;
+               } else {
+                   AlertDialog.Builder builder = new AlertDialog.Builder(NotesTextSpace.this);
+                   builder.setMessage("Сохранить изменения?");
+                   builder.setPositiveButton("SAVE",  new OnExitSaveClicListener());
+                   builder.setNegativeButton("CANCEL",  new OnExitSaveClicListener());
+                   builder.create();
+                   builder.show();
+
+
+
+               }
+               return true;
+
+           case (R.id.save_menu_item): onSaveClicked ();
+           this.finish();
+           return true;
            case (R.id.change_title): changeTitleCkicked (); return true;
-
        }
-
         return super.onOptionsItemSelected(item);
     }
 
+    private class OnExitSaveClicListener implements DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case (-1): onSaveClicked();
+                    NotesTextSpace.this.finish();
+                    System.out.println("Нажато Уес");
+                    break;
+                    //выходим с сохранением
+                case (-2): NotesTextSpace.this.finish(); //выходим без сохранения
+                    System.out.println("Нажато Ноу");
+                    break;
+            }
+
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        mySQL = new MySQL(NotesTextSpace.this);
+        try {
+            db = mySQL.getWritableDatabase();
+            String column [] = {"id", "text", "titleNote"};
+            Cursor cursor = db.query("my_DB", column, "id = " + countLVLfromScroll, null,null,null,null);
+            cursor.moveToFirst();
+            textFromSQL = cursor.getString(1);
+            cursor.close();
+        }catch (Exception ex) {ex.printStackTrace();}
+
+        if (textFromSQL.equals(String.valueOf(editText.getText()))){
+
+            this.finish();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(NotesTextSpace.this);
+            builder.setMessage("Сохранить изменения?");
+            builder.setPositiveButton("SAVE",  new OnExitSaveClicListener());
+            builder.setNegativeButton("CANCEL",  new OnExitSaveClicListener());
+            builder.create();
+            builder.show();
+            this.removeDialog(builder.hashCode());
+
+        }
+    }
 
     public void createGUInotes (){
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -212,8 +282,6 @@ public class NotesTextSpace extends AppCompatActivity {
                         getSupportActionBar().setTitle(cursor.getString(2));
                         cursor.close();
                     }catch (Exception ex) {ex.printStackTrace();}
-
-
                     break;
                 case (-2):break;
             }
@@ -221,7 +289,9 @@ public class NotesTextSpace extends AppCompatActivity {
         }
     }
 
-   /* layout_marginLeft*/
+
+
+    /* layout_marginLeft*/
 
 
 }

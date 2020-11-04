@@ -71,6 +71,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     int otstup;
     int notesSIze;
 
+    int strangInt; //delite first
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -176,13 +177,9 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         plus.setAlpha(0f);
         } catch (Exception ex) {ex.printStackTrace();}
 
-        /*for (ImageView back: backImageForRemove){
-            back.setAlpha(0f);
-        }*/
-
         notesArrayList.removeAll(notesArrayList);
-
         imageForRemove.removeAll(imageForRemove);
+
         nextNotes = 1;
         countNotes = 0;
       //  leftMarg = 220;
@@ -206,6 +203,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 createNotes();
                 plusSetParms();
             }
+            cursor.close();
         }catch (Exception ex) {ex.printStackTrace();}
 
 
@@ -401,7 +399,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
 
                 if (note.countLVL == noteLVL) {
-                    notesCountForReplace.add(noteLVL);
+                    strangInt = note.countLVL;
                     imageBack.setBackgroundColor(Color.rgb(220, 10, 10));
                 }//Цвет записи для перемещеиния
                 into_main_frameLayout1.addView(imageBack);
@@ -417,13 +415,11 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                         Notes noteOldPlace = new Notes();
                         Notes noteNewPlace = new Notes(); //здесь можно создать пустой обькст Ноте
                         for (Notes note : notesArrayList) {
-                            if (note.countLVL == notesCountForReplace.get(0)) {
+                            if (note.countLVL == strangInt) {
                                 noteOldPlace = note;
-                                break;
                             }
                             if (note.backImageForReplace == v) {
                                 noteNewPlace = note;
-                                break;
                             }
                         }
                         mySQL = new MySQL(Scroll.this);
@@ -446,29 +442,29 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
                             db.execSQL("DELETE FROM my_DB where id = " + noteNewPlace.countLVL + " or " + "id = " + noteOldPlace.countLVL);
 
+
                             db.execSQL("INSERT INTO my_DB VALUES (" + noteNewPlace.countLVL + ",'" + oldPlaceText + "', '" +
                                     oldPlaceTitle + "')");
                             db.execSQL("INSERT INTO my_DB VALUES (" + noteOldPlace.countLVL + " ,' " + newPlaceText + " ', '" +
                                     newPlaceTitle + "')");
                             cursor.close();
+                            System.out.println("закончил СКУЭЛЬ");
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                        ;
 
-                   /* for (int i = 0; i < backImageForRemove.size() ; i++) {
-                        backImageForRemove.get(i).setBackgroundColor(80000000);
-                    }*/
                         ScaleAnimation reversEndAnimation = new ScaleAnimation(0.92f, 1f, 0.92f, 1f, 100, 100);
                         reversEndAnimation.setDuration(200);
                         reversEndAnimation.setFillAfter(true);
 
                         AlphaAnimation alphaAnimation = new AlphaAnimation(0.35f, 0.1f);
                         alphaAnimation.setFillAfter(true);
-                        alphaAnimation.setDuration(200);
-
+                        alphaAnimation.setDuration(250);
 
                         repaintALL();
+
+
+
                         for (final ImageView imBC : backImageForRemove) {
                             imBC.bringToFront();
                             imBC.setOnClickListener(null);
@@ -481,8 +477,9 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
                                 @Override
                                 public void onAnimationEnd(Animation animation) {
-                                    for (ImageView imgg: backImageForRemove){
-                                    into_main_frameLayout1.removeView(imgg);}
+                                    for (ImageView imgg : backImageForRemove) {
+                                        into_main_frameLayout1.removeView(imgg);
+                                    }
                                 }
 
                                 @Override
@@ -541,9 +538,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
            notes.countLVL = cursor.getInt(0);
             coverTitle = cursor.getString(2);
            textForCover = cursor.getString(1);
-            for (int i = 0; i < 3; i++) {
-                System.out.println("КУРСОР ЗДЕСЬ " + cursor.getPosition());
-            }
             cursor.close();
             StringBuffer stringBuffer = new StringBuffer(textForCover);
             stringBuffer.setLength(18);

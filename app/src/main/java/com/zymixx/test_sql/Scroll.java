@@ -397,7 +397,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 backImageForRemove.add(imageBack);
                 note.backImageForReplace = imageBack;
 
-
                 if (note.countLVL == noteLVL) {
                     strangInt = note.countLVL;
                     imageBack.setBackgroundColor(Color.rgb(220, 10, 10));
@@ -411,7 +410,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 imageBack.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("Рандомный клик по записи");
                         Notes noteOldPlace = new Notes();
                         Notes noteNewPlace = new Notes(); //здесь можно создать пустой обькст Ноте
                         for (Notes note : notesArrayList) {
@@ -427,8 +425,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                         try {
                             db = mySQL.getWritableDatabase();
                             String column[] = {"id", "text", "titleNote"};
-                            System.out.println("Новое место " + noteNewPlace.countLVL);
-                            System.out.println("Старое место " + noteOldPlace.countLVL);
                             Cursor cursor = db.query("my_DB", column, "id = " + noteNewPlace.countLVL, null, null, null, null);
                             cursor.moveToFirst();
                             int newPlaceID = cursor.getInt(0);
@@ -439,10 +435,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                             int oldPlaceID = cursor.getInt(0);
                             String oldPlaceText = cursor.getString(1);
                             String oldPlaceTitle = cursor.getString(2);
-
                             db.execSQL("DELETE FROM my_DB where id = " + noteNewPlace.countLVL + " or " + "id = " + noteOldPlace.countLVL);
-
-
                             db.execSQL("INSERT INTO my_DB VALUES (" + noteNewPlace.countLVL + ",'" + oldPlaceText + "', '" +
                                     oldPlaceTitle + "')");
                             db.execSQL("INSERT INTO my_DB VALUES (" + noteOldPlace.countLVL + " ,' " + newPlaceText + " ', '" +

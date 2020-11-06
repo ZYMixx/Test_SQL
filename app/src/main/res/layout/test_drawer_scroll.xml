@@ -10,6 +10,7 @@
 
     >
 
+  <!--  этот лояут используется в Scroll как основной-->
 
 
     <com.google.android.material.navigation.NavigationView

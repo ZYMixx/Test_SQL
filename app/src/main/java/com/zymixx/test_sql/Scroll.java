@@ -96,8 +96,54 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
 
         final DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         final NavigationView navigationView =  findViewById(R.id.nav_view);
-       final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent ;
+                switch (menuItem.getItemId()){
+                    case(R.id.Serch): System.out.println("Поиск");
+                        intent = new Intent(Scroll.this, Search.class);
+                        startActivity(intent);
+
+                        return true;
+                    case(R.id.Setting): System.out.println("Настройки");
+                        intent = new Intent(Scroll.this, Settings.class);
+                        startActivity(intent);
+
+                        return true;
+                    case(R.id.Recycle_bin): System.out.println("Мусорка");
+                        intent = new Intent(Scroll.this, Recycle_Bin.class);
+                        startActivity(intent);
+
+                        return true;
+                }
+
+                return false;
+            }
+
+
+        });
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
                 R.string.open, R.string.closs) {
+
+           @Override
+           public View.OnClickListener getToolbarNavigationClickListener() {
+               return super.getToolbarNavigationClickListener();
+           }
+
+           @Override
+           public boolean onOptionsItemSelected(MenuItem item) {
+               getMenuInflater().inflate(R.menu.drawer_menu, item.getSubMenu());
+               for (int i = 0; i < 5; i++) {
+                   System.out.println("итем айди " + item.getItemId());
+               }
+
+               switch (item.getItemId()){
+
+               }
+
+               return super.onOptionsItemSelected(item);
+           }
 
            boolean needCheng = false;
             @Override
@@ -122,8 +168,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                     needCheng = true;}
                 super.onDrawerStateChanged(newState);
 
-
-
             }
 
            @Override
@@ -135,7 +179,11 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                 super.onDrawerSlide(drawerView, slideOffset);
            }
        };
+
+
         drawer.addDrawerListener(toggle);
+
+
 
 
 //        navigationView.setNavigationItemSelectedListener(this);

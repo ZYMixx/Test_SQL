@@ -21,9 +21,12 @@
         <activity android:name=".Scroll">
 
         </activity>
-        <activity android:name=".TestDrawer">
-
+        <activity android:name=".Recycle_Bin">
         </activity>
+        <activity android:name=".Search">
+        </activity><activity android:name=".Settings">
+        </activity>
+
 
 
     </application>

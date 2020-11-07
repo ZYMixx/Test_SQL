@@ -3,8 +3,20 @@
     <string name="open">open</string>
     <string name="closs">closs</string>
     <string name="Dwight"></string>
-
     <string name="title_activity_scrolling">ScrollingActivity</string>
-
     <string name="action_settings">Settings</string>
+
+
+<!--    называния активностей-->
+    <string name="settings">Настройки</string>
+    <string name="recycle_bin">Корзина</string>
+    <string name="search">Поиск</string>
+
+    <array name="settings_items">
+        <item>Шрифт</item>
+        <item>Цвет</item>
+        <item>Автосохранение</item>
+
+    </array>
+
 </resources>

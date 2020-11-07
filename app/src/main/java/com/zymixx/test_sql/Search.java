@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-class Search extends AppCompatActivity {
+public class Search extends AppCompatActivity {
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState){
@@ -15,6 +15,7 @@ class Search extends AppCompatActivity {
     }
 
     public void makeGUI (){
+        getSupportActionBar().setTitle(R.string.search);
 
     }
 }

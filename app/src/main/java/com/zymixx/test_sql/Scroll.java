@@ -67,7 +67,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     NavigationView navigationView;
 
     //для вычесления размера записей на экране
-    int dWidth;
+    static int dWidth;
     int otstup;
     int notesSIze;
 
@@ -104,20 +104,17 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                     case(R.id.Serch): System.out.println("Поиск");
                         intent = new Intent(Scroll.this, Search.class);
                         startActivity(intent);
-
                         return true;
                     case(R.id.Setting): System.out.println("Настройки");
                         intent = new Intent(Scroll.this, Settings.class);
                         startActivity(intent);
-
                         return true;
                     case(R.id.Recycle_bin): System.out.println("Мусорка");
                         intent = new Intent(Scroll.this, Recycle_Bin.class);
                         startActivity(intent);
-
                         return true;
                 }
-
+                drawer.closeDrawers();
                 return false;
             }
 
@@ -261,13 +258,13 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     public void makeGUI (){
 
         drawer = findViewById(R.id.drawer_layout);
-        navigationView = new NavigationView(this);
+        //navigationView = new NavigationView(this);
         navigationView = findViewById(R.id.nav_view);
-        main_nestedScrollView = new NestedScrollView(Scroll.this);
+      //  main_nestedScrollView = new NestedScrollView(Scroll.this);
         main_nestedScrollView = (NestedScrollView) findViewById(R.id.my_scroll);
-        main_frameLayout = new FrameLayout(Scroll.this);
+      //  main_frameLayout = new FrameLayout(Scroll.this);
         main_frameLayout = (FrameLayout) findViewById(R.id.main_frameLayout);
-        into_main_frameLayout1 = new FrameLayout(Scroll.this);
+      //  into_main_frameLayout1 = new FrameLayout(Scroll.this);
         into_main_frameLayout1 = (FrameLayout) findViewById(R.id.into_main_frameLayout1);
 
         floatingActionButton = findViewById(R.id.fabab);

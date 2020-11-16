@@ -11,14 +11,17 @@
 
     <FrameLayout
         android:id="@+id/recycle_bin_frameLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/into_recycle_bin_frameLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/recycle_bin_frameLayout_inFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
 
     </FrameLayout>
 

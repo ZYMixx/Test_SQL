@@ -1,52 +1,30 @@
 package com.zymixx.test_sql;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.usage.UsageEvents;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Spannable;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
-import android.transition.Transition;
-import android.view.KeyEvent;
-import android.view.KeyboardShortcutGroup;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
-
-
-import com.google.android.material.textfield.TextInputEditText;
-
-import java.util.List;
-import java.util.zip.Inflater;
 
 public class NotesTextSpace extends AppCompatActivity {
     MySQL mySQL;
     SQLiteDatabase db;
     EditText editText;
     EditText editTextForListenrt;
+    int textSizeFromSQL;
 
     //для смены заголовка
     EditText themeChanger;
@@ -95,15 +73,16 @@ public class NotesTextSpace extends AppCompatActivity {
                if (textFromSQL.equals(String.valueOf(editText.getText()))){
                    return false;
                } else {
+                   if (Scroll.auto_save == 1) {
+                       onSaveClicked();
+                       this.finish();
+                   } else {
                    AlertDialog.Builder builder = new AlertDialog.Builder(NotesTextSpace.this);
                    builder.setMessage("Сохранить изменения?");
                    builder.setPositiveButton("SAVE",  new OnExitSaveClicListener());
                    builder.setNegativeButton("CANCEL",  new OnExitSaveClicListener());
                    builder.create();
-                   builder.show();
-
-
-
+                   builder.show();}
                }
                return true;
 
@@ -150,14 +129,18 @@ public class NotesTextSpace extends AppCompatActivity {
 
             this.finish();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(NotesTextSpace.this);
-            builder.setMessage("Сохранить изменения?");
-            builder.setPositiveButton("SAVE",  new OnExitSaveClicListener());
-            builder.setNegativeButton("CANCEL",  new OnExitSaveClicListener());
-            builder.create();
-            builder.show();
-            this.removeDialog(builder.hashCode());
-
+            if (Scroll.auto_save == 1) {
+                onSaveClicked();
+                this.finish();}
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(NotesTextSpace.this);
+                builder.setMessage("Сохранить изменения?");
+                builder.setPositiveButton("SAVE", new OnExitSaveClicListener());
+                builder.setNegativeButton("CANCEL", new OnExitSaveClicListener());
+                builder.create();
+                builder.show();
+                this.removeDialog(builder.hashCode());
+            }
         }
     }
 
@@ -169,8 +152,12 @@ public class NotesTextSpace extends AppCompatActivity {
         try {
             db = mySQL.getWritableDatabase();
             String column [] = {"id", "text", "titleNote"};
+            String textSize [] = {"corent"};
             Cursor cursor = db.query("my_DB", column, "id = " + countLVLfromScroll, null,null,null,null);
             cursor.moveToFirst();
+            Cursor cursorTextSize = db.query("config_DB", textSize, "name = 'font'", null, null, null, null);
+            cursorTextSize.moveToFirst();
+            textSizeFromSQL = cursorTextSize.getInt(0);
             textFromSQL = cursor.getString(1);
             getSupportActionBar().setTitle(cursor.getString(2));
             cursor.close();
@@ -189,6 +176,15 @@ public class NotesTextSpace extends AppCompatActivity {
        into_notes_frameLayout.addView(editText);
        editText.setAlpha(0f);
        editText.setTextColor(Color.BLACK);
+
+       editTextForListenrt.setTextSize(textSizeFromSQL);
+       editText.setTextSize(textSizeFromSQL);
+       System.out.println("Размер текста " + textSizeFromSQL);
+       System.out.println("Размер текста " + textSizeFromSQL);
+       System.out.println("Размер текста " + textSizeFromSQL);
+       System.out.println("Размер текста " + textSizeFromSQL);
+
+
        editTextForListenrt.setBackgroundColor(80000000);
        editText.setBackgroundColor(80000000); //делает прозрачный фон чтобы убрать синию линию
         editTextForListenrt.setTextColor(Color.GRAY);
@@ -251,10 +247,11 @@ public class NotesTextSpace extends AppCompatActivity {
         themeChanger_frame = new FrameLayout(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Сменить заголовок");
+        themeChanger_frame.setPadding(50,0,50,0);
         themeChanger_frame.addView(themeChanger);
         Typeface typeface = Typeface.DEFAULT_BOLD;
         themeChanger.setTypeface(typeface);
-        themeChanger.setLayoutParams(Scroll.getParms(50, 10, 90, 550)); //делает её адекватного вида
+        themeChanger.setLayoutParams(Scroll.getParms(0,0,0,0)); //делает её адекватного вида
         builder.setView(themeChanger_frame);
         builder.setPositiveButton("SAVE",  new OnTitleChangeClicListener());
         builder.setNegativeButton("CANCEL",  new OnTitleChangeClicListener());

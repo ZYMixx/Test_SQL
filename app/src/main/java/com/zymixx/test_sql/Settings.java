@@ -37,6 +37,7 @@ public class Settings extends AppCompatActivity {
     }
 
     public void makeGUI() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.settings);
         LinearLayout linearLayout = findViewById(R.id.setting_LinearLayout);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.settings_items,
@@ -166,18 +167,6 @@ public class Settings extends AppCompatActivity {
 
                 if(secondListView.isItemChecked(0)){Scroll.auto_save = 1;} else {Scroll.auto_save = 0;} //autosave 0
                 if(secondListView.isItemChecked(1)){ Scroll.fust_dealite = 1;} else {  Scroll.fust_dealite = 0;}
-
-         /*       if (chosen.valueAt(0)) {
-                    Scroll.auto_save = 1;
-                } else {
-                    Scroll.auto_save = 0;
-                }
-
-                if (chosen.valueAt(1)) {
-                    Scroll.fust_dealite = 1;
-                } else {
-                    Scroll.fust_dealite = 0;
-                }*/
 
                 MySQL mySQL = new MySQL(Settings.this);
                 try {

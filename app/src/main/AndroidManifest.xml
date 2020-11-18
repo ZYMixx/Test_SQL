@@ -21,10 +21,13 @@
         <activity android:name=".Scroll">
 
         </activity>
-        <activity android:name=".Recycle_Bin">
+        <activity android:name=".Recycle_Bin"
+            android:parentActivityName=".Scroll">
         </activity>
-        <activity android:name=".Search">
-        </activity><activity android:name=".Settings">
+        <activity android:name=".Search"
+            android:parentActivityName=".Scroll">
+        </activity><activity android:name=".Settings"
+        android:parentActivityName=".Scroll">
         </activity>
 
 

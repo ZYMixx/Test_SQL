@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -85,6 +87,14 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         countNotes = 0;
         makeGUI();
         createStartNotesFromSQL();
+
+
+
+        Toast.makeText(this, "обычный текст", Toast.LENGTH_LONG + 3).show();
+
+
+
+        System.err.println("любой крутой текст");
 
 
     /*    RunnableForDrawer runnableForDrawer = new RunnableForDrawer();
@@ -207,7 +217,8 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        repaintALL();
+        //Scroll.this.recreate();
+        //repaintALL();
     }
 
     public void repaintALL() {
@@ -359,7 +370,9 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                         db.execSQL("INSERT INTO recycle_bin_DB VALUES (null, '" + text_forRecycle + "' , '" + title_forRecycle + "', '" +
                                 createTime_forRecycle +"' )");
                         db.execSQL("DELETE FROM my_DB WHERE ID = " + note_lvl);
+                       // Scroll.this.recreate();
                         repaintALL();
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     } //удаляет запись
@@ -384,6 +397,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                                     createTime_forRecycle +"' )");
                             db.execSQL("DELETE FROM my_DB WHERE ID = " + note_lvl);
 
+                           //Scroll.this.recreate();
                             repaintALL();
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -538,6 +552,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
                     alphaAnimation.setFillAfter(true);
                     alphaAnimation.setDuration(250);
 
+                    //Scroll.this.recreate();
                     repaintALL();
 
 
@@ -589,7 +604,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         String textForCover = "null";
         textView.setTextSize(20);
         textView.setLineSpacing(0f, 0.8f);
-        textView.setTextColor(Color.RED);
+        textView.setTextColor(Color.BLUE);
         textViewsForRemove.add(textView);
         Typeface typeface = Typeface.DEFAULT_BOLD;
         textView.setTypeface(typeface);

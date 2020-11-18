@@ -99,7 +99,8 @@ public class NotesTextSpace extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
-                case (-1): onSaveClicked();
+                case (-1):
+                    onSaveClicked();
                     NotesTextSpace.this.finish();
                     System.out.println("Нажато Уес");
                     break;

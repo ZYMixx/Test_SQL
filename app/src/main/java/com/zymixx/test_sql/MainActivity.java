@@ -56,10 +56,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+        ForTestClass forTestClass = new ForTestClass();
+        forTestClass.main(this);
     }
     public void clic_boton(View view) {
         Intent intent = new Intent(MainActivity.this, Scroll.class);
         startActivity(intent);
-
     }
+
+    public void forTestMetod (){}
 }

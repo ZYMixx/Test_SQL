@@ -23,13 +23,12 @@ public class Search extends AppCompatActivity {
     }
 
     public void makeGUI (){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.search);
-
 
         into_frameLayout = findViewById(R.id.into_search_frameLayout);
         into_frameLayout.setBackgroundColor(Color.BLACK);
         into_frameLayout.setOnTouchListener(new OnTTT());
-
     }
 
     private void  animateRevealColorFromCoordinates(float x, float y) {

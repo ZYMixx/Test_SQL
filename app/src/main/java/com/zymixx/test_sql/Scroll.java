@@ -56,7 +56,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     static int nextNotes = 1;
     ViewGroup.LayoutParams LPforNotes;
     String coverTitle;
-    FloatingActionButton floatingActionButton;
 
     ArrayList<Integer> notesCountForReplace = new ArrayList<Integer>();
 
@@ -272,9 +271,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         main_nestedScrollView = findViewById(R.id.my_scroll);
         main_frameLayout = findViewById(R.id.main_frameLayout);
         into_main_frameLayout1 = findViewById(R.id.into_main_frameLayout1);
-        floatingActionButton = findViewById(R.id.fabab);
-        floatingActionButton.setExpanded(true);
-        floatingActionButton.hide(); //скрываем кнопку для отмены переноса
         main_frameLayout.setLayoutParams(getParms(0, 0, 0, 0));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -482,6 +478,26 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     public void moveNoteInNewPosition(int noteLVL) {
+
+        main_frameLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                System.out.printf("МЕНЯ ТРОГАЮТ");
+                System.out.printf("МЕНЯ ТРОГАЮТ");
+                System.out.printf("МЕНЯ ТРОГАЮТ");
+                return false;
+            }
+        });
+
+        main_frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                main_frameLayout.setOnClickListener(null);
+                getSupportActionBar().setTitle(R.string.app_name);
+                repaintALL();
+            }
+        });
+
         final ScaleAnimation startScaleAnimation = new ScaleAnimation(1, 0.9f, 1f, 0.9f, 75, 75);
         startScaleAnimation.setFillAfter(true);
         startScaleAnimation.setDuration(300);
@@ -506,6 +522,9 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
             imageBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+
                     Notes noteOldPlace = new Notes();
                     Notes noteNewPlace = new Notes(); //здесь можно создать пустой обькст Ноте
                     for (Notes note : notesArrayList) {
@@ -589,7 +608,6 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         }
 
         getSupportActionBar().setTitle("..переместить запись..");
-        floatingActionButton.show();
 
     }
 

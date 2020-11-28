@@ -1,16 +1,21 @@
 package com.zymixx.test_sql;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -23,7 +28,7 @@ public class NotesTextSpace extends AppCompatActivity {
     MySQL mySQL;
     SQLiteDatabase db;
     EditText editText;
-    EditText editTextForListenrt;
+  //  EditText editTextForListenrt;
     int textSizeFromSQL;
 
     //для смены заголовка
@@ -167,68 +172,20 @@ public class NotesTextSpace extends AppCompatActivity {
 
        into_notes_frameLayout = new FrameLayout(this);
        into_notes_frameLayout = (FrameLayout) findViewById(R.id.into_notes_frameLayout);
-       editTextForListenrt = new EditText(this);
+      // editTextForListenrt = new EditText(this);
        editText = new EditText(this);
-       editTextForListenrt.setLayoutParams(Scroll.getParms(0,0,0,0));
        editText.setLayoutParams(Scroll.getParms(0,0,0,0));
-       editTextForListenrt.setText(textFromSQL);
+
+       if (textFromSQL.equals("новая запись")) {editText.setHint("Новая запись");
+       } else {
        editText.setText(textFromSQL);
-       into_notes_frameLayout.addView(editTextForListenrt);
+       editText.setSelection(textFromSQL.length()); }
+
        into_notes_frameLayout.addView(editText);
-       editText.setAlpha(0f);
        editText.setTextColor(Color.BLACK);
-
-       editTextForListenrt.setTextSize(textSizeFromSQL);
        editText.setTextSize(textSizeFromSQL);
-       System.out.println("Размер текста " + textSizeFromSQL);
-       System.out.println("Размер текста " + textSizeFromSQL);
-       System.out.println("Размер текста " + textSizeFromSQL);
-       System.out.println("Размер текста " + textSizeFromSQL);
-
-
-       editTextForListenrt.setBackgroundColor(80000000);
        editText.setBackgroundColor(80000000); //делает прозрачный фон чтобы убрать синию линию
-        editTextForListenrt.setTextColor(Color.GRAY);
-        editTextForListenrt.setSelection(editTextForListenrt.length());
-        into_notes_frameLayout.bringChildToFront(editTextForListenrt);
 
-       if (textFromSQL.equals("новая запись")){
-           editTextForListenrt.setSelection(editTextForListenrt.length());
-           editTextForListenrt.requestFocus();
-           editTextForListenrt.addTextChangedListener(new TextWatcher() {
-               @Override
-               public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-               }
-               @Override
-               public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-               }
-               @Override
-               public void afterTextChanged(Editable s) {
-                   String charToString = Character.toString(s.charAt(s.length()-1));
-                   editText.setText(charToString);
-                   into_notes_frameLayout.removeView(editTextForListenrt);
-                   editText.setAlpha(1f);
-                   editText.setSelection(editText.length());
-                   editText.requestFocus();
-
-               }
-           });
-
-           editTextForListenrt.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   into_notes_frameLayout.removeView(editTextForListenrt);
-                   editText.setText(" ");
-                   editText.setAlpha(1f);
-                   editText.setSelection(0);
-                   editText.requestFocus();
-               }
-           });
-       } else { into_notes_frameLayout.removeView(editTextForListenrt);
-           editText.setAlpha(1f);
-           editText.setSelection(editText.length());
-           editText.requestFocus();}
 
     }
 
@@ -257,8 +214,17 @@ public class NotesTextSpace extends AppCompatActivity {
         builder.setPositiveButton("SAVE",  new OnTitleChangeClicListener());
         builder.setNegativeButton("CANCEL",  new OnTitleChangeClicListener());
 
+
+
+
         builder.show();
+
+      
+
+
+
     }
+
 
     public class OnTitleChangeClicListener implements DialogInterface.OnClickListener  {
 

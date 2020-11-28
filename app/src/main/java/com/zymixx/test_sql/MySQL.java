@@ -15,10 +15,10 @@ class MySQL extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE my_DB (id INTEGER primary key autoincrement, " +
+ /*       db.execSQL("CREATE TABLE my_DB (id INTEGER primary key autoincrement, " +
                 "text varchar (250), titleNote varchar (22) DEFAULT 'Title')");
         db.execSQL("CREATE TABLE config_DB (name VARCHAR (30), corent INTEGER)");
-
+*/
     }
 
     @Override

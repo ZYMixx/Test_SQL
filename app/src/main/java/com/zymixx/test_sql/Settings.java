@@ -1,5 +1,6 @@
 package com.zymixx.test_sql;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,20 +14,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class Settings extends AppCompatActivity {
     TextView textViewSB_string;
     TextView textViewSB_int;
     static int corentTS_forSQL = 0;
+
+    ArrayList<View> notesInLineArrayButton = new ArrayList<View>();
+    TextView notesCoutnTextView; //для изменения числа записей в ряд
+    Dialog countNoteDialog;
+    //AlertDialog.Builder countNoteDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,6 +160,94 @@ public class Settings extends AppCompatActivity {
                     case 1:
                         break; //цвет
                     case 2:
+
+                        //начало изменения запсей в ряду
+
+                        FrameLayout frameLayoutDialogNotesCount = new FrameLayout(Settings.this);
+                        countNoteDialog = new Dialog(Settings.this);
+                        LinearLayout countNoteLinerLayout = new LinearLayout(Settings.this);
+                        countNoteLinerLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                        Button minus = new Button(Settings.this);
+                        Button plus = new Button(Settings.this);
+                        notesCoutnTextView = new TextView(Settings.this );
+
+                        mySQL = new MySQL(Settings.this);
+                        try {
+                            SQLiteDatabase db = mySQL.getWritableDatabase();
+                            String [] columns = {"corent"};
+                            Cursor cursorInLine = db.query("config_DB", columns, "name = 'count_notes_inline'", null, null, null, null);
+                            cursorInLine.moveToFirst();
+                            notesCoutnTextView.setText(Integer.toString(cursorInLine.getInt(0)));
+                            cursorInLine.close();
+                            db.close();
+                        } catch (Exception ex) {ex.printStackTrace();}
+
+
+                        minus.setLayoutParams(new ViewGroup.LayoutParams(Scroll.dWidth/4, Scroll.dWidth/3+Scroll.dWidth/6));
+                        plus.setLayoutParams(new ViewGroup.LayoutParams(Scroll.dWidth/4, Scroll.dWidth/3+Scroll.dWidth/6));
+                        notesCoutnTextView.setLayoutParams(new ViewGroup.LayoutParams(Scroll.dWidth/4 + (Scroll.dWidth/4) / 2 -(Scroll.dWidth/4/14),
+                                Scroll.dWidth/5));
+                        Button applayButton = new Button(Settings.this);
+
+
+                     //   frameLayoutDialogNotesCount.setPadding(4, 1, 0 ,5);
+                    //    LinearLayout secondLLforDialog = new LinearLayout(Settings.this);
+
+                          applayButton.setLayoutParams(new ViewGroup.LayoutParams(Scroll.dWidth/4 + (Scroll.dWidth/4 + Scroll.dWidth/24) / 2 -(Scroll.dWidth/4/14),
+                                  Scroll.dWidth/10));
+
+
+
+                          plus.setText("+");
+                          minus.setText("-");
+                          plus.setTextSize(32);
+                          minus.setTextSize(32);
+                          applayButton.setText("apply");
+                        notesCoutnTextView.setTextSize(48f);
+                        notesInLineArrayButton.add(minus);
+                        notesInLineArrayButton.add(plus);
+                        notesInLineArrayButton.add(applayButton);
+
+
+
+                        minus.setOnClickListener(new onChengNoteInLineListener());
+                        plus.setOnClickListener(new onChengNoteInLineListener());
+                        applayButton.setOnClickListener(new onChengNoteInLineListener());
+
+
+                          applayButton.setX(Scroll.dWidth/4 - Scroll.dWidth/82);
+                          applayButton.setY(Scroll.dWidth/3+Scroll.dWidth/16);
+
+
+                        notesCoutnTextView.setGravity(Gravity.CENTER | Gravity.TOP);
+                        countNoteLinerLayout.addView(minus);
+                        countNoteLinerLayout.addView(notesCoutnTextView);
+                        countNoteLinerLayout.addView(plus);
+                        frameLayoutDialogNotesCount.addView(countNoteLinerLayout);
+                        frameLayoutDialogNotesCount.addView(applayButton);
+
+                       // frameLayoutDialogNotesCount.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        countNoteDialog.setContentView(frameLayoutDialogNotesCount, new ViewGroup.LayoutParams(Scroll.dWidth - Scroll.dWidth/6, Scroll.dWidth/3+Scroll.dWidth/6));
+                        countNoteDialog.setTitle(null);
+
+                       // countNoteDialog.create();
+                        countNoteDialog.show();
+
+
+
+
+                        countNoteDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                notesInLineArrayButton.clear();
+                                new onChengNoteInLineListener(dialog);
+
+                            }
+                        });
+
+
+
                         break; // Заменить (автосохранение)
                 }
             }
@@ -219,6 +318,59 @@ public class Settings extends AppCompatActivity {
             }
         }
     }
-}
+
+    public class onChengNoteInLineListener implements View.OnClickListener {
+        DialogInterface dialog_forDis;
+        onChengNoteInLineListener(DialogInterface dialog){
+            dialog = this.dialog_forDis;
+        };
+        onChengNoteInLineListener(){};
+
+
+        @Override
+        public void onClick(View v) {
+            int corentSize = Integer.parseInt(String.valueOf(notesCoutnTextView.getText()));
+
+
+                if ( v == notesInLineArrayButton.get(0)){
+                    if (corentSize == 2) { Toast.makeText(Settings.this, "2 is min", Toast.LENGTH_SHORT).show();} else {
+                    notesCoutnTextView.setText(Integer.toString(corentSize - 1));}
+                    //minus
+                    }
+                if (v == notesInLineArrayButton.get(1)) {
+
+                    if (corentSize == 5) {
+                        Toast.makeText(Settings.this, "5 is max", Toast.LENGTH_SHORT).show();
+                    } else {
+                        notesCoutnTextView.setText(Integer.toString(corentSize + 1));
+                    }
+                    //plus
+                }
+                if (v == notesInLineArrayButton.get(2)) {
+
+                    MySQL mySQL = null;
+                    try {
+                        mySQL = new MySQL(Settings.this);
+                        SQLiteDatabase db = mySQL.getWritableDatabase();
+                        db.execSQL("UPDATE config_DB SET corent = " + corentSize + " WHERE name = 'count_notes_inline'");
+                        System.out.println("SOHRANIL");
+                        System.out.println(corentSize);
+                        System.out.println("SOHRANIL");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    countNoteDialog.dismiss();
+
+
+
+
+
+
+                }
+
+            }
+        }
+    }
+
 
 

@@ -15,6 +15,7 @@
     <array name="settings_items">
         <item>Шрифт</item>
         <item>Цвет</item>
+        <item>Число записей в ряду</item>
 
 
     </array>

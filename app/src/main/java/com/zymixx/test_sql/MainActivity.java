@@ -32,16 +32,21 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Здесь тоже");
 
         try {
+
             SQLiteDatabase db = mySQL.getWritableDatabase();
             db.execSQL("CREATE TABLE my_DB (id INTEGER primary key autoincrement, " +
+
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24))");
+
             db.execSQL("CREATE TABLE config_DB (name VARCHAR (30), corent INTEGER)");
             db.execSQL("CREATE TABLE recycle_bin_DB (id INTEGER primary key autoincrement, " +
+
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24)) ");
             db.close();
 
 
-        } catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex)
+        { ex.printStackTrace(); }
 
         try {
             SQLiteDatabase db = mySQL.getWritableDatabase();
@@ -52,11 +57,13 @@ public class MainActivity extends AppCompatActivity {
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24))");
             db.execSQL("CREATE TABLE config_DB (name VARCHAR (30), corent INTEGER)");
             db.execSQL("CREATE TABLE recycle_bin_DB (id INTEGER primary key autoincrement, " +
+
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24)) ");
             db.execSQL("INSERT INTO config_DB values ('font', 18 )");
             db.execSQL("INSERT INTO config_DB values ('auto_save', 0 )");
             db.execSQL("INSERT INTO config_DB values ('fust_dealite', 0 )");
             db.execSQL("INSERT INTO config_DB values ('count_notes_inline', 3 )");
+
             System.out.println("СОЗДАЛА БДБДБДБ");
             db.close();
         } catch (Exception ex) {

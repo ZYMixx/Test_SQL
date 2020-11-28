@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textForDB);
         mySQL = new MySQL(this);
 
+        System.out.println("Здесь тоже");
+
         try {
             SQLiteDatabase db = mySQL.getWritableDatabase();
             db.execSQL("CREATE TABLE my_DB (id INTEGER primary key autoincrement, " +
@@ -37,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
             db.execSQL("CREATE TABLE recycle_bin_DB (id INTEGER primary key autoincrement, " +
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24)) ");
             db.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
+
+        } catch (Exception ex) { ex.printStackTrace(); }
 
         try {
             SQLiteDatabase db = mySQL.getWritableDatabase();

@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void runDB() {
+
+        System.out.println("Меняю что-то в методе");
+
         TextView textView = findViewById(R.id.textForDB);
         mySQL = new MySQL(this);
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             db.execSQL("INSERT INTO config_DB values ('font', 18 )");
             db.execSQL("INSERT INTO config_DB values ('auto_save', 0 )");
             db.execSQL("INSERT INTO config_DB values ('fust_dealite', 0 )");
+            db.execSQL("INSERT INTO config_DB values ('count_notes_inline', 3 )");
             System.out.println("СОЗДАЛА БДБДБДБ");
             db.close();
         } catch (Exception ex) {
@@ -58,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ForTestClass forTestClass = new ForTestClass();
-        forTestClass.main(this);
+        //forTestClass.main(this);
     }
     public void clic_boton(View view) {
         Intent intent = new Intent(MainActivity.this, Scroll.class);

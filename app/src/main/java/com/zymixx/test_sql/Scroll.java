@@ -67,6 +67,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     static int dHeight;
     int otstup;
     int notesSIze;
+    static int count_Notes_inLine = 1;
 
     //статические переменые с настроек
     public static int auto_save;
@@ -217,7 +218,7 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     protected void onPostResume() {
         super.onPostResume();
         //Scroll.this.recreate();
-        //repaintALL();
+        repaintALL();
     }
 
     public void repaintALL() {
@@ -285,14 +286,17 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
         plus.setOnLongClickListener(new OnLongClick());
         into_main_frameLayout1.addView(plus);
 
+        updateConfig(); // принимает из БД данные об автосохранении и быстром удалении
+
         dWidth = screenWidth;
         dHeight = screenheight;
-        otstup = dWidth / 6 / 5;
-        notesSIze = (dWidth - otstup * 5) / 4;
+        if (dWidth > dHeight) {count_Notes_inLine += 2;}
+        otstup = dWidth / 6 / (count_Notes_inLine + 1);
+        notesSIze = (dWidth - otstup * (count_Notes_inLine + 1)) / count_Notes_inLine;
         LPforNotes = getParms(otstup, 50, notesSIze, notesSIze);
         plusSetParms(); //вычесляем размеер для записей
 
-        updateConfig(); // принимает из БД данные об автосохранении и быстром удалении
+
 
     }
 
@@ -308,8 +312,13 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
             Cursor cursor1 = db.query("config_DB", column, "name = 'fust_dealite'", null, null, null, null);
             cursor1.moveToFirst();
             fust_dealite = cursor1.getInt(0);
-
             cursor1.close();
+
+            Cursor cursor2 = db.query("config_DB", column, "name = 'count_notes_inline'", null, null, null, null);
+            cursor2.moveToFirst();
+            count_Notes_inLine = cursor2.getInt(0);
+
+            cursor2.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -704,10 +713,10 @@ public class Scroll extends AppCompatActivity implements NavigationView.OnNaviga
     } //возвращает заданые лаяут параметры одним обьектом
 
     public FrameLayout.LayoutParams getLParmsNotes(int left, int top, int height, int width) {
-        top = top * ((countNotes / 4) + 1);
-        left = (notesSIze + otstup) * (countNotes % 4 + 1) - notesSIze;
-        if (countNotes > 3) {
-            top = (notesSIze + otstup) * (countNotes / 4) + otstup * 2;
+        top = top * ((countNotes / count_Notes_inLine) + 1);
+        left = (notesSIze + otstup) * (countNotes % count_Notes_inLine + 1) - notesSIze;
+        if (countNotes > count_Notes_inLine - 1) {
+            top = (notesSIze + otstup) * (countNotes / count_Notes_inLine) + otstup * 2;
         }
         countNotes++;
         FrameLayout.LayoutParams params = new FrameLayout.

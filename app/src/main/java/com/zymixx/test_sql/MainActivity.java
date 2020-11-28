@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                     "text varchar (250), titleNote varchar (22) DEFAULT 'Title', createTime varchar (24)) ");
             db.close();
         } catch (Exception ex) {
+
             Log.e("XLog", "My changes 4");
             ex.printStackTrace();   //  TODO Так не делай. Дог будет не в потоке Error а в потоке Info/
             Log.e("XLog", "Error", ex); // TODO Лучше так.
